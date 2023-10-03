@@ -1,0 +1,1551 @@
+<?php
+ob_start();
+error_reporting(0);
+define('API_KEY','6433998791:AAHN1MIBCwOzej7NHMOkD6ZrW-b81QZrojk');
+function bot($method,$datas=[]){
+    $url = "https://api.telegram.org/bot".API_KEY."/".$method;
+    $ch = curl_init();
+    curl_setopt($ch,CURLOPT_URL,$url);
+    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+    curl_setopt($ch,CURLOPT_POSTFIELDS,$datas);
+    $res = curl_exec($ch);
+    if(curl_error($ch)){
+        var_dump(curl_error($ch));
+    }else{
+        return json_decode($res);
+    }
+}
+$Dev = array("6433998791","6433998791","6433998791"); //ID ADMIN NUMBER 1 HE CHAT
+@$usernamebot = "@yooyoo_yooyoo_bot"; //UserName Bot
+@$channel = "mfm_mmr"; // UserName Channel don't @
+@$token = API_KEY;
+$update = json_decode(file_get_contents('php://input'));
+@$message = $update->message;
+@$from_id = $message->from->id;
+@$chat_id = $message->chat->id;
+@$message_id = $message->message_id;
+@$first_name = $message->from->first_name;
+@$last_name = $message->from->last_name;
+@$username = $message->from->username;
+@$text = $message->text;
+@$firstname = $update->callback_query->from->first_name;
+@$usernames = $update->callback_query->from->username;
+@$chatid = $update->callback_query->message->chat->id;
+@$fromid = $update->callback_query->from->id;
+@$membercall = $update->callback_query->id;
+@$reply = $update->message->reply_to_message->forward_from->id;
+/*===== dev ~ @mfm_mmr =====*/
+@$data = $update->callback_query->data;
+@$messageid = $update->callback_query->message->message_id;
+@$tc = $update->message->chat->type;
+@$gpname = $update->callback_query->message->chat->title;
+@$namegroup = $update->message->chat->title;
+@$text = $update->inline_qurey->qurey;
+/*===== dev ~ @mfm_mmr =====*/
+@$newchatmemberid = $update->message->new_chat_member->id;
+@$newchatmemberu = $update->message->new_chat_member->username;
+@$rt = $update->message->reply_to_message;
+@$replyid = $update->message->reply_to_message->message_id;
+@$tedadmsg = $update->message->message_id;
+@$edit = $update->edited_message->text;
+@$re_id = $update->message->reply_to_message->from->id;
+@$re_user = $update->message->reply_to_message->from->username;
+@$re_name = $update->message->reply_to_message->from->first_name;
+@$re_msgid = $update->message->reply_to_message->message_id;
+@$re_chatid = $update->message->reply_to_message->chat->id;
+@$message_edit_id = $update->edited_message->message_id;
+@$chat_edit_id = $update->edited_message->chat->id;
+@$edit_for_id = $update->edited_message->from->id;
+@$edit_chatid = $update->callback_query->edited_message->chat->id;
+@$caption = $update->message->caption;
+$chatid3=$update->message->chat->id;
+$fromid3=$update->message->from->id;
+$text=$update->message->text;
+$mid=$update->message->message_id;
+/*===== dev ~ @mfm_mmr =====*/
+@$statjson = json_decode(file_get_contents("https://api.telegram.org/bot$token/getChatMember?chat_id=$chat_id&user_id=".$from_id),true);
+@$status = $statjson['result']['status'];
+@$statjsonrt = json_decode(file_get_contents("https://api.telegram.org/bot$token/getChatMember?chat_id=$chat_id&user_id=".$re_id),true);
+@$statusrt = $statjsonrt['result']['status'];
+@$statjsonq = json_decode(file_get_contents("https://api.telegram.org/bot$token/getChatMember?chat_id=$chatid&user_id=".$fromid),true);
+@$statusq = $statjsonq['result']['status'];
+@$info = json_decode(file_get_contents("https://api.telegram.org/bot$token/getChatMember?chat_id=$chat_edit_id&user_id=".$edit_for_id),true);
+@$you = $info['result']['status'];
+@$forchannel = json_decode(file_get_contents("https://api.telegram.org/bot".$token."/getChatMember?chat_id=@".$channel."&user_id=".$from_id));
+@$tch = $forchannel->result->status;
+$title =$message->chat->title;
+$rep = $message->reply_to_message;
+/*===== dev ~ @mfm_mmr =====*/
+@$settings = json_decode(file_get_contents("data/$chat_id.json"),true);
+@$settings2 = json_decode(file_get_contents("data/$chatid.json"),true);
+@$editgetsettings = json_decode(file_get_contents("data/$chat_edit_id.json"),true);
+@$user = json_decode(file_get_contents("data/user.json"),true);
+@$filterget = $settings["filterlist"];
+
+/*===== فانكشن =====*/
+function SendMessage($chat_id, $text){
+bot('sendMessage',[
+'chat_id'=>$chat_id,
+'text'=>$text,
+'parse_mode'=>'MarkDown']);
+}
+ function Forward($berekoja,$azchejaei,$kodompayam)
+{
+bot('ForwardMessage',[
+'chat_id'=>$berekoja,
+'from_chat_id'=>$azchejaei,
+'message_id'=>$kodompayam
+]);
+}
+function  getUserProfilePhotos($token,$from_id) {
+  @$url = 'https://api.telegram.org/bot'.$token.'/getUserProfilePhotos?user_id='.$from_id;
+  @$result = file_get_contents($url);
+  @$result = json_decode ($result);
+  @$result = $result->result;
+  return $result;
+}
+function check_filter($str){
+global $filterget;
+foreach($filterget as $d){
+ if (mb_strpos($str, $d) !== false) {
+  return true;
+}
+}
+}
+if ($tc == 'private'){  
+@$user = json_decode(file_get_contents("data/user.json"),true);
+if(!in_array($from_id, $user["userlist"])) {
+$user["userlist"][]="$from_id";
+$user = json_encode($user,true);
+file_put_contents("data/user.json",$user);
+}
+}
+elseif ($tc == 'group' | $tc == 'supergroup'){  
+@$user = json_decode(file_get_contents("data/user.json"),true);
+if(!in_array($chat_id, $user["grouplist"])) {
+$user["grouplist"][]="$chat_id";
+$user = json_encode($user,true);
+file_put_contents("data/user.json",$user);
+}
+}
+$message_id = $update->message->message_id;
+$user          = $update->message->from->username;
+$from_id     = $message->from->id;
+$re         = $update->message->reply_to_message;
+
+
+mkdir("data/member");
+mkdir("data/member/$chat_id");
+
+$Cmember = file_get_contents("data/member/$chat_id/Cmember.txt");
+$CCmember = file_get_contents("data/member/$chat_id/member.txt");
+$getCCmember = explode("\n",$CCmember);
+
+if ($tc == 'group' | $tc == 'supergroup'){  
+if($status == "creator" ||  in_array($from_id,$Dev) ) {
+
+if($re and $text == "رفع مدير"  and !in_array($re_id,$getCCmember)){
+file_put_contents("data/member/$chat_id/member.txt",$re_id ."\n",FILE_APPEND);
+file_put_contents("data/member/$chat_id/Cmember.txt","- @" . $re_user . " ٭ " . $re_id . " ٭" . "\n" , FILE_APPEND);
+bot("SendMessage",[
+'chat_id'=>$chat_id,
+'text'=>"
+👤¦ العضو » [$re_name](tg://user?id=$re_id) 
+🎫¦ الايدي » {$re_id}
+🛠¦ تمت ترقيته ليصبح مدير 
+✓️
+",'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+    'reply_to_message_id'=>$message->message_id,
+  ]);
+}
+
+if($re and $text == "رفع مدير" and in_array($re_id,$getCCmember)){
+bot("SendMessage",[
+'chat_id'=>$chat_id,
+'text'=>"
+👤¦ العضو » [$re_name](tg://user?id=$re_id) 
+🎫¦ الايدي » {$re_id}
+🛠¦ تمت ترقيته ليصبح مدير مسبقا
+✓️
+",
+'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+    'reply_to_message_id'=>$message->message_id,
+  ]);
+}
+
+
+if($re and $text == "تنزيل مدير"  and in_array($re_id,$getCCmember)){
+$str = str_replace($re_id,"",$getCCmember);
+$str2 = str_replace("- @" . $re_user . " ٭ " . $re_id . " ٭","",$Cmember);
+$ex = explode("\n",$str);
+$ex2 = explode("\n",$str2);
+file_put_contents("data/member/$chat_id/member.txt",$ex);
+file_put_contents("data/member/$chat_id/Cmember.txt",$ex2);
+bot("SendMessage",[
+'chat_id'=>$chat_id,
+'text'=>"
+👤¦ العضو » [$re_name](tg://user?id=$re_id) 
+🎫¦ الايدي » {$re_id}
+🛠¦ تمت تنزيله ليصبح عضو 👶🏻
+✓️
+",'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+    'reply_to_message_id'=>$message->message_id,
+  ]);
+}
+if($re and $text == "تنزيل مدير"  and !in_array($re_id,$getCCmember)){
+bot("SendMessage",[
+'chat_id'=>$chat_id,
+'text'=>"
+👤¦ العضو » [$re_name](tg://user?id=$re_id) 
+🎫¦ الايدي » {$re_id}
+🛠¦ تمت تنزيله مسبقا 
+✓️
+",'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+    'reply_to_message_id'=>$message->message_id,
+  ]);
+}
+if($text == "المدراء"  $text == "قائمه المدراء" and $Cmember != null  $Cmember != ""){
+bot("SendMessage",[
+'chat_id'=>$chat_id,
+'text'=>"🍬¦ اليك المدراء عزيزي
+
+$Cmember ",
+'parse_mode'=>'MARKDOWN',
+    'reply_to_message_id'=>$message->message_id,
+  ]);
+}
+
+
+if($text == "مسح المدراء" || $text == "مسح قائمه المدراء"){
+file_put_contents("data/member/$chat_id/member.txt","");
+file_put_contents("data/member/$chat_id/Cmember.txt","");
+bot("SendMessage",[
+'chat_id'=>$chat_id,
+'text'=>"🥠¦ تم حذف جميع المدراء",
+'parse_mode'=>'MARKDOWN',
+    'reply_to_message_id'=>$message->message_id,
+  ]);
+         }
+    }
+}
+mkdir("data/admins");
+mkdir("data/admins/$chat_id");
+
+$Cadmins = file_get_contents("data/admins/$chat_id/Cadmins.txt");
+$CCadmins = file_get_contents("data/admins/$chat_id/admins.txt");
+$useradmin = explode("\n",$CCadmins);
+
+if ($tc == 'group' | $tc == 'supergroup'){  
+if($status == "creator"  $status == "administrator"   in_array($from_id,$Dev)  ||  in_array($from_id,$getCCadmins)  ) {
+
+if($re and $text == "رفع ادمن"  and !in_array($re_id,$useradmin)){
+file_put_contents("data/admins/$chat_id/admins.txt",$re_id ."\n",FILE_APPEND);
+file_put_contents("data/admins/$chat_id/Cadmins.txt","- @" . $re_user . " ٭ " . $re_id . " ٭" . "\n" , FILE_APPEND);
+bot("SendMessage",[
+'chat_id'=>$chat_id,
+'text'=>"
+👤¦ العضو » [$re_name](tg://user?id=$re_id) 
+🎫¦ الايدي » {$re_id}
+🛠¦ تمت ترقيته ليصبح ادمن 
+✓️
+",'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+    'reply_to_message_id'=>$message->message_id,
+  ]);
+}
+
+if($re and $text == "رفع ادمن" and in_array($re_id,$useradmin)){
+bot("SendMessage",[
+'chat_id'=>$chat_id,
+'text'=>"
+👤¦ العضو » [$re_name](tg://user?id=$re_id) 
+🎫¦ الايدي » {$re_id}
+🛠¦ تمت ترقيته ليصبح ادمن مسبقا
+✓️
+",
+'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+    'reply_to_message_id'=>$message->message_id,
+  ]);
+}
+
+
+if($re and $text == "تنزيل ادمن"  and in_array($re_id,$useradmin)){
+$str = str_replace($re_id,"",$CCadmins);
+$str2 = str_replace("- @" . $re_user . " ٭ " . $re_id . " ٭","",$Cadmins);
+$ex = explode("\n",$str);
+$ex2 = explode("\n",$str2);
+file_put_contents("data/admins/$chat_id/admins.txt",$ex);
+file_put_contents("data/admins/$chat_id/Cadmins.txt",$ex2);
+bot("SendMessage",[
+'chat_id'=>$chat_id,
+'text'=>"
+👤¦ العضو » [$re_name](tg://user?id=$re_id) 
+🎫¦ الايدي » {$re_id}
+🛠¦ تمت تنزيله ليصبح عضو 👶🏻
+✓️
+",'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+    'reply_to_message_id'=>$message->message_id,
+  ]);
+}
+if($re and $text == "تنزيل ادمن"  and !in_array($re_id,$useradmin)){
+bot("SendMessage",[
+'chat_id'=>$chat_id,
+'text'=>"
+👤¦ العضو » [$re_name](tg://user?id=$re_id) 
+🎫¦ الايدي » {$re_id}
+🛠¦ تمت تنزيله مسبقا 
+✓️
+",'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+    'reply_to_message_id'=>$message->message_id,
+  ]);
+}
+
+/*
+if($text == "الادمنية"  $text == "قائمه الادمنية" and $Cadmins != null  $Cadmins != ""){
+bot("SendMessage",[
+'chat_id'=>$chat_id,
+'text'=>"🍬¦ اليك الادمنية عزيزي
+
+$Cadmins ",
+'parse_mode'=>'MARKDOWN',
+    'reply_to_message_id'=>$message->message_id,
+  ]);
+}*/
+
+
+if($text == "مسح الادمنية" || $text == "مسح قائمه الادمنية"){
+file_put_contents("data/admins/$chat_id/admins.txt","");
+file_put_contents("data/admins/$chat_id/Cadmins.txt","");
+bot("SendMessage",[
+'chat_id'=>$chat_id,
+'text'=>"🥠¦ تم حذف جميع الادمنية",
+'parse_mode'=>'MARKDOWN',
+    'reply_to_message_id'=>$message->message_id,
+  ]);
+         }
+    }
+}
+mkdir("data/mmyaz74");
+mkdir("data/mmyaz74/$chat_id");
+
+$mmyaz7= file_get_contents("data/mmyaz74/$chat_id/Cmmyaz74.txt");
+$mmyaz77 = file_get_contents("data/mmyaz74/$chat_id/mmyaz74.txt");
+$mmyaz = explode("\n",$mmyaz77);
+
+if ($tc == 'group' | $tc == 'supergroup'){  
+if($status == "creator"  $status == "administrator"   in_array($from_id,$Dev)    in_array($from_id,$getCCmember)    in_array($from_id,$useradmin)  ){
+if($re and $text == "رفع مميز"  and !in_array($re_id,$mmyaz)){
+file_put_contents("data/mmyaz74/$chat_id/mmyaz74.txt",$re_id ."\n",FILE_APPEND);
+file_put_contents("data/mmyaz74/$chat_id/Cmmyaz74.txt","- @" . $re_user . " ٭ " . $re_id . " ٭" . "\n" , FILE_APPEND);
+bot("SendMessage",[
+'chat_id'=>$chat_id,
+'text'=>"
+👤¦ العضو » [$re_name](tg://user?id=$re_id) 
+🎫¦ الايدي » {$re_id}
+🛠¦ تمت ترقيته ليصبح مميز 
+✓️
+",'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+    'reply_to_message_id'=>$message->message_id,
+  ]);
+}
+
+if($re and $text == "رفع مميز" and in_array($re_id,$mmyaz)){
+bot("SendMessage",[
+'chat_id'=>$chat_id,
+'text'=>"
+👤¦ العضو » [$re_name](tg://user?id=$re_id) 
+🎫¦ الايدي » {$re_id}
+🛠¦ تمت ترقيته ليصبح عضو مميز مسبقا
+✓️
+",
+'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+    'reply_to_message_id'=>$message->message_id,
+  ]);
+}
+
+
+if($re and $text == "تنزيل مميز"  and in_array($re_id,$mmyaz)){
+$str = str_replace($re_id,"",$mmyaz77);
+$str2 = str_replace("- @" . $re_user . " ٭ " . $re_id . " ٭","",$Cmmyaz74);
+$ex = explode("\n",$str);
+$ex2 = explode("\n",$str2);
+file_put_contents("data/mmyaz74/$chat_id/mmyaz74.txt",$ex);
+file_put_contents("data/mmyaz74/$chat_id/Cmmyaz74.txt",$ex2);
+bot("SendMessage",[
+'chat_id'=>$chat_id,
+'text'=>"
+👤¦ العضو » [$re_name](tg://user?id=$re_id) 
+🎫¦ الايدي » {$re_id}
+🛠¦ تمت تنزيله ليصبح عضو 👶🏻
+✓️
+",'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+    'reply_to_message_id'=>$message->message_id,
+  ]);
+}
+if($re and $text == "تنزيل مميز"  and !in_array($re_id,$mmyaz)){
+bot("SendMessage",[
+'chat_id'=>$chat_id,
+'text'=>"
+👤¦ العضو » [$re_name](tg://user?id=$re_id) 
+🎫¦ الايدي » {$re_id}
+🛠¦ تمت تنزيله مسبقا 
+✓️
+",'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+    'reply_to_message_id'=>$message->message_id,
+  ]);
+}
+
+
+if($text == "المميزين"  $text == "قائمه المميزين" and $mmyaz7!= null  $mmyaz7!= ""){
+bot("SendMessage",[
+'chat_id'=>$chat_id,
+'text'=>"🍬¦ اليك المميزين عزيزي
+
+$mmyaz7",
+'parse_mode'=>'MARKDOWN',
+    'reply_to_message_id'=>$message->message_id,
+  ]);
+}
+
+
+if($text == "مسح المميزين" || $text == "مسح قائمه المميزين"){
+file_put_contents("data/mmyaz74/$chat_id/mmyaz74.txt","");
+file_put_contents("data/mmyaz74/$chat_id/Cmmyaz74.txt","");
+bot("SendMessage",[
+'chat_id'=>$chat_id,
+'text'=>"🥠¦ تم حذف جميع المميزين",
+'parse_mode'=>'MARKDOWN',
+    'reply_to_message_id'=>$message->message_id,
+  ]);
+         }
+    }
+}
+if( $text=="الادمنيه" or $text=="الادمنية"){
+if ( $status == 'creator' or $status == 'administrator' or in_array($from_id,$Dev)) {
+  $up = json_decode(file_get_contents("https://api.telegram.org/bot$token/getChatAdministrators?chat_id=".$chat_id),true);
+  $result = $up['result'];
+  foreach($result as $key=>$value){
+$found = $result[$key]['status'];
+if($found == "creator"){
+  $owner = $result[$key]['user']['id'];
+  $owner2 = $result[$key]['user']['username'];
+}
+if($found == "administrator"){
+if($result[$key]['user']['first_name'] == true){
+$innames = str_replace(['[',']'],'',$result[$key]['user']['first_name']);
+$msg = $msg."\n"."√┇"."[{$innames}](tg://user?id={$result[$key]['user']['id']})";
+}
+  }
+  }
+bot('sendmessage',[
+'chat_id'=>$chat_id,
+'text'=>"
+مقفول┇المالك  ~
+$owner | @$owner2 🙎‍♂
+﹎﹎﹎﹎﹎﹎﹎﹎﹎﹎﹎﹎﹎﹎
+👮🏻┇قائمة الادمنية بالمجموعة  ~
+$msg
+﹎﹎﹎﹎﹎﹎﹎﹎﹎﹎﹎﹎﹎﹎
+$Cadmins
+",
+'reply_to_message_id'=>$message_id,
+'reply_markup'=>$inlinebutton,
+'parse_mode'=>"MarkDown",
+ ]);
+}
+}
+
+//link 
+if($settings["lock"]["link"] == "مقفول️"){
+if ($status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$useradmin) && !in_array($from_id,$getCCmember) && !in_array($from_id,$mmyaz) ){
+if (strstr($text,"t.me") == true or strstr($text,"telegram.me") == true or strstr($text,"https://") == true or strstr($text,"://") == true or strstr($text,"wWw.") == true or strstr($text,"WwW.") == true or strstr($text,"T.me/") == true or strstr($text,"WWW.") == true or strstr($caption,"t.me") == true or strstr($caption,"telegram.me")) {
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id,
+]);
+}
+}
+}
+if($settings["lock"]["linkr"] == "مقفول️"){
+if ($status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$useradmin) && !in_array($from_id,$getCCmember) && !in_array($from_id,$mmyaz)  ){
+if (strstr($text,"t.me") == true or strstr($text,"telegram.me") == true or strstr($text,"https://") == true or strstr($text,"://") == true or strstr($text,"wWw.") == true or strstr($text,"WwW.") == true or strstr($text,"T.me/") == true or strstr($text,"WWW.") == true or strstr($caption,"t.me") == true or strstr($caption,"telegram.me")) {   
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id,
+]);
+bot('restrictChatMember',[
+   'user_id'=>$from_id,   
+   'chat_id'=>$chat_id,
+   'can_post_messages'=>false,
+]);
+}
+}
+}
+//farse ♥
+if($settings["lock"]["farse"] == "مقفول️"){
+ if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$getCCmember) && !in_array($from_id,$useradmin) && !in_array($from_id,$mmyaz) ){ 
+$uo=json_decode(file_get_contents("https://api.telegram.org/bot$token/getchat?chat_id=$fromid3"))->result;
+$io=$uo->first_name;
+$word = json_decode(file_get_contents("https://translate.yandex.net/api/v1.5/tr.json/detect?key=trnsl.1.1.20170725T151635Z.31fe7a5603917164.915fed1f5a9aaebef43860694075516e7af7aa47&text=".urlencode($io)))->lang;
+$new = $update->message->new_chat_member; 
+if($new and $word !="ar" and $word !="en"){
+bot('SendMessage', [
+'chat_id'=>$chatid3,
+'text'=>"⚠️┇ ممنوع دخول الفارسية هنا  [$io](tg://user?id=$fromid3)"
+,'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+]);
+bot('kickChatMember',[
+'chat_id'=>$chatid3,
+'user_id'=>$fromid3,
+]);
+}
+}
+}
+// lock photo
+if($settings["lock"]["photo"] == "مقفول️"){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$getCCmember) && !in_array($from_id,$useradmin) && !in_array($from_id,$mmyaz) ){ 
+if ($update->message->photo){  
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+}
+}
+}
+// lock photo r
+if($settings["lock"]["photor"] == "مقفول️"){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$getCCmember) && !in_array($from_id,$useradmin) && !in_array($from_id,$mmyaz) ){ 
+if ($update->message->photo){  
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id,
+]);
+bot('restrictChatMember',[
+   'user_id'=>$from_id,   
+   'chat_id'=>$chat_id,
+   'can_post_messages'=>false,
+]);
+}
+}
+}
+// gif
+if($settings["lock"]["gif"] == "مقفول️"){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$getCCmember) && !in_array($from_id,$useradmin) && !in_array($from_id,$mmyaz) ){ 
+if ($update->message->document){  
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+}
+}
+}
+//gif r
+if($settings["lock"]["gifr"] == "مقفول️"){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$getCCmember) && !in_array($from_id,$useradmin) && !in_array($from_id,$mmyaz) ){ 
+if ($update->message->document){  
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id,
+]);
+bot('restrictChatMember',[
+   'user_id'=>$from_id,   
+   'chat_id'=>$chat_id,
+   'can_post_messages'=>false,
+]);
+}
+}
+}
+// document
+if($settings["lock"]["document"] == "مقفول️"){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$getCCmember) && !in_array($from_id,$useradmin) && !in_array($from_id,$mmyaz) ){ 
+if ($update->message->document){  
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+}
+}
+}
+
+// video
+if($settings["lock"]["video"] == "مقفول️"){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$getCCmember) && !in_array($from_id,$useradmin) && !in_array($from_id,$mmyaz) ){ 
+if ($update->message->video){  
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+  }
+}
+}
+// video r
+if($settings["lock"]["videor"] == "مقفول️"){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$getCCmember) && !in_array($from_id,$useradmin) && !in_array($from_id,$mmyaz) ){ 
+if ($update->message->video){  
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id,
+]);
+bot('restrictChatMember',[
+   'user_id'=>$from_id,   
+   'chat_id'=>$chat_id,
+   'can_post_messages'=>false,
+]);
+  }
+}
+}
+// edit 
+if($editgetsettings["lock"]["edit"] == "مقفول️"){
+if ( $you != 'creator' && $you != 'administrator' && $edit_for_id != $Dev && $edit_for_id != $getCCmember && $edit_for_id != $useradmin && $edit_for_id != $mmyaz){
+if ($update->edited_message->text){  
+bot('deletemessage',[
+'chat_id'=>$chat_edit_id,
+'message_id'=>$message_edit_id
+]);
+}
+}
+}
+// contact
+if ($settings["lock"]["contact"] == "مقفول️"){
+if($update->message->contact){
+if ($tc == 'group' | $tc == 'supergroup'){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$getCCmember) && !in_array($from_id,$useradmin) && !in_array($from_id,$mmyaz) ){ 
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+}
+}
+}
+}
+
+// tag
+if ($settings["lock"]["tag"] == "مقفول️"){
+if (strstr($text,"#") == true or strstr($caption,"#") == true) {
+if ($tc == 'group' | $tc == 'supergroup'){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$getCCmember) && !in_array($from_id,$useradmin) && !in_array($from_id,$mmyaz) ){ 
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+}
+}
+}
+}
+// username 
+if ($settings["lock"]["username"] == "مقفول️"){
+if (strstr($text,"@") == true or strstr($caption,"@") == true) {
+if ($tc == 'group' | $tc == 'supergroup'){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$getCCmember) && !in_array($from_id,$useradmin) && !in_array($from_id,$mmyaz) ){ 
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+}
+}
+}
+}
+// audio
+if ($settings["lock"]["audio"] == "مقفول️"){
+if($update->message->audio){
+if ($tc == 'group' | $tc == 'supergroup'){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$getCCmember) && !in_array($from_id,$useradmin) && !in_array($from_id,$mmyaz) ){ 
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+}
+}
+}
+}
+// voice 
+if ($settings["lock"]["voice"] == "مقفول️"){
+if($update->message->voice){
+if ($tc == 'group' | $tc == 'supergroup'){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$getCCmember) && !in_array($from_id,$useradmin) && !in_array($from_id,$mmyaz) ){ 
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+}
+}
+}
+}
+if($settings["lock"]["bot"] == "مقفول️"){
+if ($message->new_chat_member->is_bot) {
+$hardmodebot = $settings["information"]["hardmodebot"];
+if($hardmodebot == "مفتوح"){
+ bot('kickChatMember',[
+ 'chat_id'=>$chat_id,
+  'user_id'=>$update->message->new_chat_member->id
+  ]);
+}
+else
+{
+ bot('kickChatMember',[
+ 'chat_id'=>$chat_id,
+  'user_id'=>$update->message->new_chat_member->id
+  ]);
+}
+}
+}
+// kick bots and user
+if($settings["lock"]["botk"] == "مقفول️"){
+if ($message->new_chat_member->is_bot) {
+$hardmodebot = $settings["information"]["hardmodebot"];
+if($hardmodebot == "مفتوح"){
+ bot('kickChatMember',[
+ 'chat_id'=>$chat_id,
+ 'user_id'=>$update->message->new_chat_member->id
+  ]);
+}
+else
+{
+ bot('kickChatMember',[
+ 'chat_id'=>$chat_id,
+  'user_id'=>$update->message->new_chat_member->id
+  ]);
+   bot('kickChatMember',[
+ 'chat_id'=>$chat_id,
+  'user_id'=>$from_id
+  ]);
+}
+}
+}
+// sticker
+if ($settings["lock"]["sticker"] == "مقفول️"){
+if($update->message->sticker){
+if ($tc == 'group' | $tc == 'supergroup'){
+if( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$useradmin) && !in_array($from_id,$getCCmember)  && !in_array($from_id,$mmyaz) ){
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+}
+}
+}
+}
+// forward
+if ($settings["lock"]["forward"] == "مقفول️"){
+if($update->message->forward_from | $update->message->forward_from_chat){
+if ($tc == 'group' | $tc == 'supergroup'){
+if( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$useradmin) && !in_array($from_id,$getCCmember) ){
+ bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message->message_id
+]);
+ }
+}
+}
+}
+
+//forward restrict
+if ($settings["lock"]["forwardr"] == "مقفول️"){
+if($update->message->forward_from | $update->message->forward_from_chat){
+if ($tc == 'group' | $tc == 'supergroup'){
+if( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$useradmin) && !in_array($from_id,$getCCmember)  && !in_array($from_id,$mmyaz) ){
+
+ bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message->message_id,
+]);
+bot('restrictChatMember',[
+   'user_id'=>$from_id,   
+   'chat_id'=>$chat_id,
+   'can_post_messages'=>false,
+]);
+ }
+}
+}
+}
+
+
+// fosh 
+if ($settings["lock"]["fosh"] == "مقفول️"){
+if (strstr($text,"كس") == true  or strstr($text,"ذب") == true or strstr($text,"اير") == true  or  strstr($text,"شرموطة") == true   or strstr($text,"الاسد") == true) {
+if ($tc == 'group' | $tc == 'supergroup'){
+if( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$useradmin) && !in_array($from_id,$getCCmember)  && !in_array($from_id,$mmyaz) ){
+
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+bot('restrictChatMember',[
+   'user_id'=>$from_id,   
+   'chat_id'=>$chat_id,
+   'can_post_messages'=>false,
+   'until_date'=>time()+1800,
+]);
+}
+}
+}
+}
+//arabic
+if ($settings["lock"]["ar"] == "مقفول️"){
+if (strstr($text,"ض") == true  or strstr($text,"ص") == true or strstr($text,"ق") == true  or  strstr($text,"ف") == true   or strstr($text,"غ") == true or  strstr($text,"ع") == true  or strstr($text,"ه") == true or strstr($text,"خ") == true  or  strstr($text,"ح") == true   or strstr($text,"ج") == true or strstr($text,"ش") == true  or strstr($text,"س") == true or strstr($text,"ي") == true  or  strstr($text,"ب") == true   or strstr($text,"ل") == true or  strstr($text,"ا") == true  or strstr($text,"ت") == true or strstr($text,"ن") == true  or  strstr($text,"م") == true   or strstr($text,"ك") == true or strstr($text,"ظ") == true or strstr($text,"ط") == true  or  strstr($text,"ذ") == true   or strstr($text,"د") == true or  strstr($text,"ز") == true  or strstr($text,"ر") == true or strstr($text,"و") == true  or  strstr($text,"ة") == true   or strstr($text,"ث") == true or strstr($text,"ؤ") == true  or strstr($text,"ء") == true or strstr($text,"ى") == true  or  strstr($text,"ئ") == true   or strstr($text,"آ") == true or  strstr($text,"إ") == true  or strstr($text,"أ") == true ) {
+if ($tc == 'group' | $tc == 'supergroup'){
+if( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$useradmin) && !in_array($from_id,$getCCmember)  && !in_array($from_id,$mmyaz) ){
+
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+}
+}
+}
+}
+//English
+if ($settings["lock"]["en"] == "مقفول️"){
+if (strstr($text,"q") == true  or strstr($text,"w") == true or strstr($text,"e") == true  or  strstr($text,"r") == true   or strstr($text,"t") == true or  strstr($text,"y") == true  or strstr($text,"u") == true or strstr($text,"i") == true  or  strstr($text,"o") == true   or strstr($text,"p") == true or strstr($text,"a") == true  or strstr($text,"s") == true or strstr($text,"d") == true  or  strstr($text,"f") == true   or strstr($text,"g") == true or  strstr($text,"h") == true  or strstr($text,"j") == true or strstr($text,"k") == true  or  strstr($text,"l") == true   or strstr($text,"z") == true or strstr($text,"x") == true or strstr($text,"c") == true  or  strstr($text,"v") == true   or strstr($text,"b") == true or  strstr($text,"n") == true  or strstr($text,"m") == true or strstr($text,"Q") == true  or  strstr($text,"X") == true   or strstr($text,"C") == true or strstr($text,"F") == true  or strstr($text,"G") == true or strstr($text,"H") == true  or  strstr($text,"A") == true   or strstr($text,"L") == true or  strstr($text,"O") == true  or strstr($text,"P") == true ) {
+if ($tc == 'group' | $tc == 'supergroup'){
+if( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$useradmin) && !in_array($from_id,$getCCmember)  && !in_array($from_id,$mmyaz) ){
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+}
+}
+}
+}
+//iduser
+
+if(!$rep && $text=="ايدي"){
+  $iduser = $settings["lock"]["iduser"];
+if ($iduser == "مفتوح") {
+  $result=json_decode(file_get_contents("https://api.telegram.org/bot".API_KEY."/getUserProfilePhotos?user_id=$from_id"),true);
+  $file_id=$result["result"]["photos"][0][0]["file_id"];
+  $count=$result["result"]["total_count"];
+  var_dump(
+bot("sendphoto",[
+  "chat_id"=>$chat_id,
+  "caption"=>"
+👤┇اسمك ↫ $first_name 
+❕┇معرفك ↫ ﹙@$username ﹚
+🔰┇ايديك ↫ ﹙ $from_id ﹚
+🔢┇عدد صورك ↫﹙ $count ﹚
+®┇اسم المجموعه ↫ ﹙$title ﹚
+",
+"photo"=>"$file_id",
+'parse_mode'=>'MarkDown', 'disable_web_page_preview'=>true,
+  'reply_to_message_id'=>$message->message_id,
+  ]));
+  }
+}
+
+
+// muteall
+if ($settings["lock"]["mute_all"] == "مقفول️"){
+if($update->message){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) ){
+ bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message->message_id
+]);
+ }
+}
+}
+//tsmet ♥
+if ($settings["lock"]["tsmet"] == "مقفول️"){
+if($update->message){
+if ( $status != 'creator' &&  !in_array($from_id,$Dev) ){
+ bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message->message_id
+]);
+ }
+}
+}
+//markdown
+if ($settings["lock"]["markdowns"] == "مقفول️"){
+if($update->message->entities){
+if( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$useradmin) && !in_array($from_id,$getCCmember)  && !in_array($from_id,$mmyaz) ){
+
+ bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message->message_id
+]);
+ }
+}
+}
+// muteall time
+if ($settings["lock"]["mute_all_time"] == "مقفول️"){
+$locktime = $settings["information"]["mute_all_time"];
+date_default_timezone_set('Asia/Damascus');
+$date1 = date("h:i:s");
+if($date1 < $locktime){
+if($update->message){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) ){
+ bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message->message_id
+]);
+ }
+else
+{
+$settings["lock"]["mute_all_time"]="مفتوح";
+$settings = json_encode($settings,true);
+file_put_contents("data/$chat_id.json",$settings);
+}
+}
+}
+}
+// replay
+if ($settings["lock"]["reply"] == "مقفول️"){
+if($update->message->reply_to_message){
+if ($tc == 'group' | $tc == 'supergroup'){
+if( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$useradmin) && !in_array($from_id,$getCCmember)  && !in_array($from_id,$mmyaz) ){
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message->message_id
+]);
+ }
+}
+}
+}
+// tg
+if ($settings["lock"]["tgservic"] == "مقفول️"){
+if($update->message->new_chat_member | $update->message->new_chat_photo | $update->message->new_chat_title | $update->message->left_chat_member | $update->message->pinned_message){
+if ($tc == 'group' | $tc == 'supergroup'){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) ){
+ bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message->message_id
+]);
+ }
+}
+}
+}
+// text
+if ($settings["lock"]["text"] == "مقفول️"){
+if($update->message->text){
+if ($tc == 'group' | $tc == 'supergroup'){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) ){
+ bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message->message_id
+]);
+ }
+}
+}
+}
+// video note
+if ($settings["lock"]["video_msg"] == "مقفول️"){
+if($update->message->video_note){
+if ($tc == 'group' | $tc == 'supergroup'){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$getCCmember) && !in_array($from_id,$useradmin) && !in_array($from_id,$mmyaz)) {
+ bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message->message_id
+]);
+ }
+}
+}
+}
+
+
+
+if($settings["information"]["add"] == "مقفول️") {
+if($newchatmemberid == true){
+$add = $settings["addlist"]["$from_id"]["add"];
+$addplus = $add +1;
+$settings["addlist"]["{$from_id}"]["add"]="$addplus";
+$settings = json_encode($settings,true);
+file_put_contents("data/$chat_id.json",$settings);
+}
+}
+
+if($settings["information"]["add"] == "مقفول️"){
+if( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$useradmin) && !in_array($from_id,$getCCmember)  && !in_array($from_id,$mmyaz) ){
+
+if ($tc == 'group' | $tc == 'supergroup'){
+$youadding = $settings["addlist"]["$from_id"]["add"];
+$setadd = $settings["information"]["setadd"];
+$addtext = $settings["addlist"]["$from_id"]["addtext"];
+$msg = $settings["information"]["lastmsgadd"];
+if($youadding < $setadd){
+if($addtext == false){
+bot('SendMessage',[
+'chat_id'=>$chat_id,
+'text'=>"
+🙎‍♂┊عزيزي العضو [$first_name](https://t.me/$username)
+🚸┊لتستطيع التكلم اضف $setadd من الاعضاء
+",
+]);
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+    bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$msg
+]);
+$msgplus = $message_id + 1;
+$settings["information"]["lastmsgadd"]="$msgplus";
+$settings["addlist"]["$from_id"]["addtext"]="true";
+$settings["addlist"]["$from_id"]["add"]=0;
+$settings = json_encode($settings,true);
+file_put_contents("data/$chat_id.json",$settings);
+  }
+  else
+  {
+      bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+ ]);
+   }
+}
+  }
+}
+}
+//  game
+if($settings["lock"]["game"] == "مقفول️"){
+if($update->message->game){
+if ($tc == 'group' | $tc == 'supergroup'){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$getCCmember) && !in_array($from_id,$useradmin) ){
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+}
+}
+}
+}
+// location
+if ($settings["lock"]["location"] == "مقفول️"){
+if($update->message->location){
+if ($tc == 'group' | $tc == 'supergroup'){
+if ( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$getCCmember) && !in_array($from_id,$useradmin) ){
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+}
+}
+}
+}
+//spam
+ date_default_timezone_set('Asia/Damascus');
+$as = date('i')+15;
+if ( $status == 'creator' or $status == 'administrator' or in_array($from_id,$Dev) or in_array($from_id,$getCCmember) or in_array($from_id,$useradmin)) {
+  if(strpos($text,"وضع تكرار") !== false){
+mkdir("data/$chat_id");
+mkdir("spam");
+$spamx = str_replace("وضع تكرار ","",$text);
+if(is_numeric($spamx)){
+ if($spamx > 0){
+file_put_contents("data/$chat_id/spamxe.txt",$spamx);
+file_put_contents("spam/tim.txt",$as); 
+var_dump(bot('sendMessage',[ 
+'chat_id' => $chat_id,
+'text' =>"
+💬┇بواسطه ~⪼ [$first_name](t.me/$username)
+☑┇تم وضع تكرار $spamx",
+'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+'reply_to_message_id' => $message->message_id,
+]));
+}}}}
+$weplus = 1 ;
+$timex = date("Y-m-d-h-i-A");
+$timex = str_replace("am", "", $timex);
+@$NBots = file_get_contents("spam/$from_id/$timex.txt");
+$timex_spam = $NBots + 1;
+mkdir("spam/$from_id");
+file_put_contents("spam/$from_id/$timex.txt",$timex_spam);
+$NBots2 = file_get_contents("spam/$from_id/$timex.txt");
+$NBX = file_get_contents("data/$chat_id/spamxe.txt");
+if($NBots2 >=$NBX) {
+if ($settings["lock"]["spam"] == "مقفول️"){
+var_dump(bot('restrictChatMember',[
+'user_id'=>$from_id,   
+'chat_id'=>$chat_id,
+'can_post_messages'=>false,
+'until_date'=>time()+$weplus*1600,
+]));
+}}
+$timer = file_get_contents("spam/tim.txt"); 
+if($message and $timer<date('h')){
+$dir = "spam";
+$all = scandir($dir);
+if($all != null){
+   foreach($all as $file){
+      if($file == '.' or $file == '..') continue;
+      if(is_file($dir.'/'.$file)){
+         unlink($dir.'/'.$file);
+      } elseif(is_dir($dir.'/'.$file)){
+          $sc = scandir($dir.'/'.$file);
+foreach($sc as $sn){
+             if($sn == '.' or $sn == '..') continue;
+             unlink($dir.'/'.$file.'/'.$sn);
+             rmdir($dir.'/'.$file);
+          }
+      } 
+   }
+} else {
+   die('not found dir');
+}
+rmdir($dir);
+mkdir($dir);
+file_put_contents("spam/tim.txt",$as); 
+}
+// filter
+if($text=="/filterlist" or $text=="filterlist" or $text=="قائمة الفلتر"){
+if ( $status == 'creator' or $status == 'administrator' or in_array($from_id,$Dev) or in_array($from_id,$getCCmember) or in_array($from_id,$useradmin)) {
+$filter = $settings["filterlist"];
+for($z = 0;$z <= count($filter)-1;$z++){
+$result = $result.$filter[$z]."\n";
+}
+bot('sendmessage',[
+'chat_id'=>$chat_id,
+'text'=>"
+⚠┊قائمة الكلمات الممنوعه ،
+┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ 
+|🔘|~⪼($result)
+",
+     'reply_to_message_id'=>$message_id,
+'reply_markup'=>$inlinebutton,
+ ]);
+}
+}
+elseif (strpos($text , "/filter ") !== false or strpos($text , "فلترة كلمة") !== false) {
+if ( $status == 'creator' or $status == 'administrator' or in_array($from_id,$Dev) or in_array($from_id,$getCCmember) or in_array($from_id,$useradmin)) {
+$add = $settings["information"]["added"];
+if ($add == true) {
+$text = str_replace(['/filter ','فلترة كلمة'],'',$text);
+bot('sendmessage',[
+        'chat_id'=>$chat_id,
+        'text'=>"
+☑┇تم اضافتها لقائمه المنع
+🔘┇{$text}
+",
+     'reply_to_message_id'=>$message_id,
+'reply_markup'=>$inlinebutton,
+ ]);
+@$settings = json_decode(file_get_contents("data/$chat_id.json"),true);
+$settings["filterlist"][]="$text";
+$settings = json_encode($settings,true);
+file_put_contents("data/$chat_id.json",$settings);
+}
+}
+}
+elseif (strpos($text , "/unfilter " ) !== false or strpos($text , "الغاء فلترة") !== false) {
+if ( $status == 'creator' or $status == 'administrator' or in_array($from_id,$Dev) or in_array($from_id,$getCCmember) or in_array($from_id,$useradmin)) {
+$text = str_replace(['/unfilter ','الغاء فلترة'],'',$text);
+bot('sendmessage',[
+        'chat_id'=>$chat_id,
+        'text'=>"
+☑┇تم ازالتها من لقائمه المنع
+🔘┇{$text}
+",
+     'reply_to_message_id'=>$message_id,
+'reply_markup'=>$inlinebutton,
+ ]);
+@$settings = json_decode(file_get_contents("data/$chat_id.json"),true);
+$key = array_search($text,$settings["filterlist"]);
+unset($settings["filterlist"][$key]);
+$settings["filterlist"] = array_values($settings["filterlist"]); 
+$settings = json_encode($settings,true);
+file_put_contents("data/$chat_id.json",$settings);
+}
+}
+if($text== "/clean filterlist" or $text=="clean filterlist" or $text=="مسح الفلاتر"){
+if ( $status == 'creator' or $status == 'administrator' or in_array($from_id,$Dev) ) {
+$add = $settings["information"]["added"];
+if ($add == true) {
+bot('sendmessage',[
+'chat_id'=>$chat_id,
+'text'=>"
+☑┇تم مسح قائمه المنع
+",
+     'reply_to_message_id'=>$message_id,
+'reply_markup'=>$inlinebutton,
+ ]);
+@$settings = json_decode(file_get_contents("data/$chat_id.json"),true);
+unset($settings["filterlist"]);
+$settings = json_encode($settings,true);
+file_put_contents("data/$chat_id.json",$settings);
+}
+
+}
+}
+if($settings["filterlist"] != false){
+if ($status != 'creator' && $status != 'administrator' ) {
+$check = check_filter("$text");
+if ($check == true) {
+bot('deletemessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+}
+}
+}
+// setrules
+if($settings["information"]["step"] == "setrules"){
+if ( $status == 'creator' or $status == 'administrator' or in_array($from_id,$Dev) or in_array($from_id,$getCCmember) or in_array($from_id,$useradmin)){
+if ($tc == 'group' | $tc == 'supergroup'){
+$plus = mb_strlen("$text");
+if($plus < 500) {
+bot('sendmessage',[
+ 'chat_id'=>$chat_id,
+ 'text'=>"مقفول┇تم وضع القوانين للمجموعه",
+  'reply_to_message_id'=>$message_id,
+ ]);
+$settings["information"]["rules"]="$text";
+$settings["information"]["step"]="none";
+$settings = json_encode($settings,true);
+file_put_contents("data/$chat_id.json",$settings);
+}
+else
+{
+bot('sendmessage',[
+'chat_id'=>$chat_id,
+'text'=>"
+❕┇لا تستطيع وضع اكثر من 500 حرف
+",
+  'reply_to_message_id'=>$message_id,
+'reply_markup'=>$inlinebutton,
+ ]);
+}
+}
+}
+}
+// lock channel 
+/*
+if($settings["information"]["lockchannel"] == "مقفول️"){
+if( $status != 'creator' && $status != 'administrator' && !in_array($from_id,$Dev) && !in_array($from_id,$useradmin) && !in_array($from_id,$getCCmember)  && !in_array($from_id,$mmyaz) ){
+
+if ($tc == 'group' | $tc == 'supergroup'){
+$usernamechannel = $settings["information"]["setchannel"];
+@$forchannel = json_decode(file_get_contents("https://api.telegram.org/bot".$token."/getChatMember?chat_id=".$usernamechannel."&user_id=".$from_id));
+@$tch = $forchannel->result->status;
+if($tch != 'member' && $tch != 'creator' && $tch != 'administrator'){
+$msg = $settings["information"]["lastmsglockchannel"];
+$channeltext = $settings["channellist"]["$from_id"]["channeltext"];
+  if($channeltext == false){
+        bot('SendMessage',[
+            'chat_id'=>$chat_id,
+            'text'=>"
+            👤┇العضو ~⪼ [$first_name](t.me/$username)
+            (http://t.me/$mfm_mmr) 
+⚠️┇يجب ان تشترك بالقناة لتكلم هنا
+$usernamechannel
+",'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+        ]);
+        bot('deletemessage',[
+            'chat_id'=>$chat_id,
+        'message_id'=>$message_id
+        ]);
+              bot('deletemessage',[
+            'chat_id'=>$chat_id,
+        'message_id'=>$msg
+        ]);
+$msgplus = $message_id + 1;
+$settings["information"]["lastmsglockchannel"]="$msgplus";
+$settings["channellist"]["$from_id"]["channeltext"]="true";
+$settings = json_encode($settings,true);
+file_put_contents("data/$chat_id.json",$settings);
+      }
+   else
+   {
+                bot('deletemessage',[
+            'chat_id'=>$chat_id,
+        'message_id'=>$message_id
+   ]);
+   }
+ }
+   }
+ }
+ }
+if($settings["information"]["step"] == "setchannel"){
+if ( $status == 'creator' or $status == 'administrator' or in_array($from_id,$Dev) or in_array($from_id,$getCCmember) or in_array($from_id,$useradmin)){
+if ($tc == 'group' | $tc == 'supergroup'){
+if(strpos($text , '@') !== false) {
+$plus = mb_strlen("$text");
+if($plus < 25) {
+bot('sendmessage',[
+ 'chat_id'=>$chat_id,
+ 'text'=>"
+💬┇بواسطه ~⪼ [$first_name](t.me/$username)
+☑┇تم وضع قناة $text
+‼️┇انتبه يجب ان يكون بوت ادمن بالقناة
+",'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+  'reply_to_message_id'=>$message_id,
+ ]);
+$settings["information"]["setchannel"]="$text";
+$settings["information"]["step"]="none";
+$settings = json_encode($settings,true);
+file_put_contents("data/$chat_id.json",$settings);
+}
+else
+{
+ bot('sendmessage',[
+'chat_id'=>$chat_id,
+'text'=>"⚠️┇خطا المعرف غير مسموح به",
+  'reply_to_message_id'=>$message_id,
+  
+                 
+           
+ ]);
+}
+}
+else
+{
+ bot('sendmessage',[
+'chat_id'=>$chat_id,
+'text'=>"
+⚠️┇خطأ يجب ان تضع @ للمعرف  
+🔰┇مثال • @$channel •√
+",
+  'reply_to_message_id'=>$message_id,
+           
+ ]);
+}
+}
+}
+} 
+*/
+
+
+mkdir("𝑭𝒂𝒄𝒕 ♡.");
+$MAHMOUD0= file_get_contents("https://api.telegram.org/bot$token/getChatMember?chat_id=$chat_id&user_id=".$from_id);
+$MAHMOUD1= json_decode($MAHMOUD0, true);
+$MAHMOUD2 = $MAHMOUD1['result']['status'];
+$ch = file_get_contents("𝑭𝒂𝒄𝒕 ♡./$chat_id.txt");
+$join = file_get_contents("https://api.telegram.org/bot$token/getChatMember?chat_id=$ch&user_id=".$from_id);
+
+
+if($message && (strpos($join,'"status":"left"') or strpos($join,'"Bad Request: USER_ID_INVALID"') or strpos($join,'"status":"kicked"'))!== false){
+if($status != "creator" and $status != "administrator"){
+bot('DeleteMessage',[
+'chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+$get =bot("sendMessage",[
+"chat_id"=>$chat_id,
+"text"=>"👤┇العضو ~⪼ [$first_name](t.me/$mfm_mmr)
+⚠️┇يجب ان تشترك بالقناة لتكلم هنا
+@$ch
+",'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+]);
+sleep(10);
+bot("deleteMessage",[
+"chat_id"=>$chat_id,
+"message_id"=>$get->result->message_id
+]);return false;}}
+
+if($status == "creator" or $status == "administrator" ){
+$S = file_get_contents("𝑭𝒂𝒄𝒕 ♡. /S$chat_id $from_id.txt");
+if($text == "تفعيل الاشتراك الاجباري"){
+file_put_contents("𝑭𝒂𝒄𝒕 ♡./S$chat_id $from_id.txt", "1");
+file_put_contents("𝑭𝒂𝒄𝒕 ♡./$chat_id.txt", "");
+bot('sendmessage',[
+'chat_id'=>$chat_id,
+'text'=>"- [$first_name](tg://user?id=$from_id) ؛ ❤️
+- الان ارسل معرف قناة المجموعة التي لايمكن للاعضاء التكلم فيها الى بعد الاشتراك فيها ؛ ✅
+'https://t.me/mfm_mmr',
+'parse_mode'=>"MarkDown",
+'disable_web_page_preview' =>true,
+]);
+}
+if($text and $S == "1"){
+file_put_contents("𝑭𝒂𝒄𝒕 ♡./$chat_id.txt", "$text");
+file_put_contents("𝑭𝒂𝒄𝒕 ♡./S$chat_id $from_id.txt", "");
+bot("sendMessage",[
+"chat_id"=>$chat_id,
+"text"=>"- [$first_name](tg://user?id=$from_id) ؛ ❤️
+
+- تم حفظ قناة المجموعة بنجاح ؛ ✅
+
+- الان تأكد من ان البوت ادمن في القناة لاعمل بالشكل الصحيح ؛ 👨‍✈️",
+'parse_mode'=>"MarkDown",
+'disable_web_page_preview' =>true,
+]);
+}
+if($text == "تعطيل الاشتراك الاجباري"){
+file_put_contents("𝑭𝒂𝒄𝒕 ♡./$chat_id.txt", "");
+bot('sendmessage',[
+'chat_id'=>$chat_id,
+'text'=>"- [$first_name](tg://user?id=$from_id) ؛ ❤️
+
+- تم تعطيل البوت بنجاح ؛ ✅",
+'parse_mode'=>"MarkDown",
+'disable_web_page_preview' =>true,
+]);
+}
+}
+
+//♥
+
+
+
+
+
+// setwelcome
+if($settings["information"]["step"] == "setwelcome"){
+if ( $status == 'creator' or $status == 'administrator' or in_array($from_id,$Dev) or in_array($from_id,$getCCmember) or in_array($from_id,$useradmin)){
+if ($tc == 'group' | $tc == 'supergroup'){
+$plus = mb_strlen("$text");
+if($plus < 200) {
+bot('sendmessage',[
+ 'chat_id'=>$chat_id,
+ 'text'=>"
+مقفول┇تم وضع ترحيب للمجموعه
+",'reply_to_message_id'=>$message_id,
+ ]);
+$settings["information"]["textwelcome"]="$text";
+$settings["information"]["step"]="none";
+$settings = json_encode($settings,true);
+file_put_contents("data/$chat_id.json",$settings);
+}
+else
+{
+ bot('sendmessage',[
+'chat_id'=>$chat_id,
+'text'=>"❕┇لا تستطيع وضع اكثر من 200 حرف",
+  'reply_to_message_id'=>$message_id,
+ 
+ ]);
+}
+}
+}
+}
+// banall
+elseif ($tc == 'private'){ 
+if(in_array($from_id, $user["banlist"])) {
+bot('sendmessage',[
+'chat_id'=>$chat_id,
+'text'=>"💯 لقد تم حظرك من البوت ♨️",
+'reply_markup'=>json_encode(['KeyboardRemove'=>[
+],'remove_keyboard'=>true
+])
+]);
+}
+}
+elseif ($tc == 'group' | $tc == 'supergroup'){ 
+if(in_array($from_id, $user["banlist"])) {
+ bot('KickChatMember',[
+'chat_id'=>$chat_id,
+'user_id'=>$from_id
+]);
+}
+}
+// sup
+if($user["userjop"]["$from_id"]["file"] == "sup"&& $tc == "private"){   
+if ($text != "🔙 رجوع") { 
+bot('ForwardMessage',[
+'chat_id'=>$Dev[0],
+'from_chat_id'=>$chat_id,
+'message_id'=>$message_id
+]);
+  bot('sendmessage',[       
+  'chat_id'=>$chat_id,
+  'text'=>"مقفول️ تم ارسال اقتراحك شكرا لك",
+]); 
+}
+}
+
+if($text == "تفعيل الاعضاء" ){
+if($tc == 'group' | $tc == 'supergroup'){  
+if( $status == 'creator' and !in_array($from_id,$Dev) and !in_array($from_id,$getCCmember) and !in_array($from_id,$useradmin) ){
+$add = $settings["information"]["added"];
+if ($add == true) {
+$setadd = $settings["information"]["setadd"];
+ bot('sendMessage',[
+'chat_id'=>$chat_id,
+'text'=>"
+🙋🏼‍♂️¦ أهلا عزيزي [المنشىء](tg://user?id=$from_id) 👷🏽
+📡¦ تم قفل الاعضاء
+✓
+",'parse_mode'=>"markdown",'disable_web_page_preview'=>true,'reply_to_message_id'=>$message_id,
+]);
+$settings["information"]["add"]="مقفول️";
+$settings = json_encode($settings,true);
+file_put_contents("data/$chat_id.json",$settings);
+} 
+}
+}
+}
+if($text == "تفعيل الاعضاء" ){
+if ($tc == 'group' | $tc == 'supergroup'){  
+if ( $status == 'administrator' and !in_array($from_id,$Dev) and !in_array($from_id,$useradmin) and !in_array($from_id,$getCCmember)){
+$add = $settings["information"]["added"];
+if ($add == true) {
+$setadd = $settings["information"]["setadd"];
+ bot('sendMessage',[
+'chat_id'=>$chat_id,
+'text'=>"
+🙋🏼‍♂️¦ أهلا عزيزي [المشرف](tg://user?id=$from_id) 👷🏽
+📡¦ تم قفل الاعضاء
+✓
+",'parse_mode'=>"markdown",'disable_web_page_preview'=>true,'reply_to_message_id'=>$message_id,
+]);
+$settings["information"]["add"]="مقفول️";
+$settings = json_encode($settings,true);
+file_put_contents("data/$chat_id.json",$settings);
+} 
+}
+}
+}
+if($text == "تفعيل الاعضاء" ){
+if($tc == 'group' | $tc == 'supergroup'){
+if( in_array($from_id,$Dev) and !in_array($from_id,$getCCmember) and !in_array($from_id,$useradmin)){
+$add = $settings["information"]["added"];
+if ($add == true) {
+$setadd = $settings["information"]["setadd"];
+ bot('sendMessage',[
+'chat_id'=>$chat_id,
+'text'=>"
+🙋🏼‍♂️¦ أهلا عزيزي [المطور](tg://user?id=$from_id) 👷🏽
+📡¦ تم قفل الاعضاء
+✓
+",'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+'parse_mode'=>"markdown"
+,  'reply_to_message_id'=>$message_id,
+   ]);
+$settings["information"]["add"]="مقفول️";
+$settings = json_encode($settings,true);
+file_put_contents("data/$chat_id.json",$settings);
+   } 
+}
+}
+}
+if($text == "تفعيل الاعضاء" ){
+if($tc == 'group' | $tc == 'supergroup'){
+if( in_array($from_id,$getCCmember) and !in_array($from_id,$Dev) and !in_array($from_id,$useradmin)){
+$add = $settings["information"]["added"];
+if ($add == true) {
+$setadd = $settings["information"]["setadd"];
+ bot('sendMessage',[
+'chat_id'=>$chat_id,
+'text'=>"
+🙋🏼‍♂️¦ أهلا عزيزي [المدير](tg://user?id=$from_id) 👷🏽
+📡¦ تم قفل الاعضاء
+✓
+",'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+'parse_mode'=>"markdown"
+,  'reply_to_message_id'=>$message_id,
+   ]);
+$settings["information"]["add"]="مقفول️";
+$settings = json_encode($settings,true);
+file_put_contents("data/$chat_id.json",$settings);
+   } 
+}
+}
+}
+if($text == "تفعيل الاعضاء" ){
+if($tc == 'group' | $tc == 'supergroup'){
+if( in_array($from_id,$useradmin) and !in_array($from_id,$Dev) and !in_array($from_id,$getCCmember)){
+$add = $settings["information"]["added"];
+if ($add == true) {
+$setadd = $settings["information"]["setadd"];
+ bot('sendMessage',[
+'chat_id'=>$chat_id,
+'text'=>"
+🙋🏼‍♂️¦ أهلا عزيزي [الادمن](tg://user?id=$from_id) 👷🏽
+📡¦ تم قفل الاعضاء
+✓
+",'parse_mode'=>"markdown",'disable_web_page_preview'=>true,
+'parse_mode'=>"markdown"
+,  'reply_to_message_id'=>$message_id,
+   ]);
+$settings["information"]["add"]="مقفول️";
+$settings = json_encode($settings,true);
+?>
